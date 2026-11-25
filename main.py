@@ -58,6 +58,11 @@ def pick():
 
 def main():
     name = pick()
+    # Gate self-check: the sealed scorer only accepts UTF-8 text of 1 to
+    # 32 characters that is not only white space. Refuse to write anything
+    # that would fail the gate instead of shipping a bad entry.
+    if not (1 <= len(name) <= MAX_CHARS and name.strip()):
+        raise SystemExit(f"picked name fails the gate: {name!r}")
     out = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, "entry.txt"), "w", encoding="utf-8") as f:
